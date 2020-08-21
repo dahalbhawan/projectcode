@@ -1,0 +1,29 @@
+{% extends 'shopping/layout.html' %}
+{% block title %}
+    Sign In
+{% endblock %}
+{% block body-class %}{% endblock %}
+{% block body %}
+    <div class="sign-in container-sm p-2 bg-light">
+
+        <form action="{% url 'shopping:signin' %}" method="post" class="form-signin">
+            {% csrf_token %}
+            {% if message %}
+                <div class="alert alert-danger text-center">{{ message }}</div>
+            {% endif %}
+            <div class="container">
+                <h2 class= " logo text-center text-primary" >Icing Tales</h2>
+            </div>
+
+            <h2 class="mb-3 mt-4 font-weight-normal text-center">Please sign in</h2>
+            {{ form }}
+            <div class="checkbox mb-3 text-center">
+                <label>
+                    <input type="checkbox" value="remember-me" name="remember"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Sign In</button>
+
+        </form>
+    </div>
+{% endblock %}

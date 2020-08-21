@@ -1,0 +1,114 @@
+{% load static %}
+{% load custom_tags %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'shopping/css/styles.css' %}">
+    <script>
+        $(document).ready(function(){
+            $("td:contains(Ready)").css({'color':'#28a745', 'font-weight':'bolder'});
+            $("td:contains(Pending)").css({'color': '#ffc107', 'font-weight':'bolder'});
+            $("td:contains(Fulfilled)").css({'color': '#007bff', 'font-weight':'bolder'});
+            $("td:contains(Cancelled)").css({'color': '#dc3545', 'font-weight':'bolder'});
+        });
+    </script>
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+</head>
+<body class="{% block body-class %}{% endblock %}">
+    <nav class="navbar navbar-expand-md bg-primary navbar-dark">
+        <a class=" logo navbar-brand"
+           href="{% if user.is_superuser or user.is_staff %} {% url 'shopping:admin' %} {% else %}{% url 'shopping:index' %} {% endif %}">
+            Icing Tales
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav mr-auto">
+                {% if user.is_staff or user.is_superuser %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:admin' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:products' %}">Products</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:users' %}">Users</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:index' %}">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="">Cake Menu</a>
+                        <div class="dropdown">
+                            <div class="dropdown-menu">
+                              {% for category in cake_categories %}
+                                  <a class="dropdown-item" href="#">{{ category }}</a>
+                                  <div class="dropdown-divider"></div>
+                              {% endfor %}
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:sitemap' %}">Site Map</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:aboutus' %}">About Us</a>
+                    </li>
+                    <form class="form-inline" action="#" method="get">
+                        <input class="form-control mx-md-3" type="text" placeholder="Search">
+                        <button class="btn btn-success" type="submit">Search</button>
+                    </form>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" {% if user.is_staff or user.is_superuser %} style="color:gold;" {% endif %}>
+                            <span>Welcome</span>
+                            {% if user.is_staff %}
+                                Admin
+                            {% endif %}
+                            <i class="fa fa-user" aria-hidden="true"></i> <span style="font-weight:bold;">{{ user.first_name.upper }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:signout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Sign Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:signin' %}"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'shopping:register' %}"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div id="page-content">
+        {% block body %}
+        {% endblock %}
+    </div>
+    <footer id="sticky-footer" class="py-4 bg-primary text-light">
+        <div class="container text-center">
+          <small>Copyright &copy; Icing Tales Cake</small>
+        </div>
+    </footer>
+
+</body>
+</html>

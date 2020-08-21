@@ -1,0 +1,103 @@
+{% extends 'shopping/layout.html' %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block body %}
+    <div class = "container-fluid row my-4">
+        <div class="col-sm-3">
+            <div class="card border-primary p-3 h-100">
+                <div class="card border-info shadow text-primary p-3 my-card" ><span class="fas fa-birthday-cake fa-lg" aria-hidden="true"></span></div>
+                <div class="text-primary text-center mt-3"><h5>Total Orders</h5></div>
+                <div class="text-primary text-center mt-2"><h5>{{ total_orders }}</h5></div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-info p-3 h-100">
+                <div class="card border-info shadow text-info p-3 my-card" ><span class="fas fa-bell fa-lg" aria-hidden="true"></span></div>
+                <div class="text-info text-center mt-3"><h5>Total Orders Today</h5></div>
+                <div class="text-info text-center mt-2"><h3>{{ total_orders_today }}</h3></div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-success p-3 h-100">
+                <div class="card border-success shadow text-success p-3 my-card" ><span class="fas fa-calendar-check fa-lg" aria-hidden="true"></span></div>
+                <div class="text-success text-center mt-3"><h5>Total Orders Ready</h5></div>
+                <div class="text-success text-center mt-2"><h3>{{ total_orders_ready }}</h3></div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card border-warning p-3 h-100">
+                <div class="card border-danger shadow text-warning p-3 my-card" ><span class="fas fa-hourglass-start fa-lg" aria-hidden="true"></span></div>
+                <div class="text-warning text-center mt-3"><h5>Total Orders Pending</h5></div>
+                <div class="text-warning text-center mt-2"><h3>{{ total_orders_pending }}</h3></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid row">
+        <div class="col-md-12 p-3">
+            <div class="card border-primary p-3">
+                <h4 class="text-primary">Orders</h4>
+                <h5 class="text-secondary">Filter</h5>
+                <form class="form-inline" style="padding:5px">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <input id="id" class= "form-control" type="text" name="id" placeholder="Id">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="customer" class= "form-control" type="text" name="customer" placeholder="Customer">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="date" class= "form-control" type="text" name="date" placeholder="Date">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="time" class= "form-control" type="text" name="time" placeholder="Time">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="item" class= "form-control" type="text" name="Item" placeholder="Item">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="status" class= "form-control" type="text" name="status" placeholder="Status">
+                        </div>
+                    </div>
+                </form>
+                <div class="scrollable">
+                    <table class="dashboard-table table table-striped table-hover">
+                        <thead>
+                            <th scope="col">Id</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Order Date</th>
+                            <th scope="col">Order Time</th>
+                            <th scope="col">Items</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Update</th>
+                            <th scope="col">Delete</th>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            <tr scope="row">
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer.get_full_name }}</td>
+                                <td>{{ order.date_created.date }}</td>
+                                <td>{{ order.date_created.time }}</td>
+                                <td>
+                                    <ol style="padding-left:12px;margin:0px;">
+                                        {% for item in order.items.all %}
+                                            <li>{{ item.name}}</li>
+                                        {% endfor %}
+                                    </ol>
+                                </td>
+                                <td>{{ order_status|get_item:order.status }}</td>
+                                <td><div><a href="" class="text-primary"><i class="fas fa-edit text-primary>" aria-hidden="true"></i> Update</a></div></td>
+                                <td><div><a href="" class="text-danger"><i class="fas fa-trash text-danger>" aria-hidden="true"></i> Delete</a></div></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

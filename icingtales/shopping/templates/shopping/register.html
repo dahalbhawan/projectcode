@@ -1,0 +1,30 @@
+{% extends 'shopping/layout.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Sign Up
+{% endblock %}
+
+{% block body %}
+    <div class="container-sm p-2 mx-5">
+        <form action="{% url 'shopping:register' %}" method="post" class="form-group">
+            {% csrf_token %}
+            {% if message %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endif %}
+            <div class="container-fluid-sm">
+                <h2 class= " logo text-primary mt-3" >Icing Tales</h2>
+            </div>
+            <h3 class="mt-3 font-weight-normal">Get Started With Your Account</h3>
+            <p class="form-description text-muted">Get more personalized experience with Icytales. Please fill in the details below.<br>Fields marked (*) are compulsory.</p>
+
+            {{ form|crispy }}
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="agreement" name="agreement" required="true">
+                    I have read and agreed the <a href="#">terms and conditions.</a>
+                </label>
+            </div>
+            <button class="btn btn-primary" type="submit">Sign Up</button>
+        </form>
+    </div>
+{% endblock %}

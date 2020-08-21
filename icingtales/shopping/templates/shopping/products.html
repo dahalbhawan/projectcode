@@ -1,0 +1,81 @@
+{% extends 'shopping/layout.html' %}
+
+{% block title %}
+    Site Map
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid row">
+        <div class="col-md-12 p-3">
+            <div class="card border-primary p-3">
+                <h4 class="text-primary">Products</h4>
+                <h5 class="text-secondary">Filter</h5>
+                <form class="form-inline" style="padding:5px">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <input id="id" class= "form-control" type="text" name="id" placeholder="Id">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="customer" class= "form-control" type="text" name="customer" placeholder="Item">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="date" class= "form-control" type="text" name="date" placeholder="Category">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="time" class= "form-control" type="text" name="time" placeholder="Date Added">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="item" class= "form-control" type="text" name="Item" placeholder="Price">
+                        </div>
+                        <div class="col-md-2">
+                            <input id="status" class= "form-control" type="text" name="status" placeholder="Status">
+                        </div>
+                    </div>
+                </form>
+                <div class="scrollable">
+                    <table class="dashboard-table table table-striped table-hover">
+                        <thead>
+                            <th scope="col">Id</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Categories</th>
+                            <th scope="col">Date Added</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Update</th>
+                            <th scope="col">Delete</th>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr scope="row">
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>
+                                    <ol style="padding-left:12px;margin:0px;">
+                                        {% for category in item.categories.all %}
+                                            <li>{{ category.category }}</li>
+                                        {% endfor %}
+                                    </ol>
+                                </td>
+                                <td>{{ item.date_created }}</td>
+                                <td>${{ item.price }}</td>
+                                <td>
+                                    {% if item.status %}
+                                        <i class="fas fa-check text-success"></i>
+                                    {% else %}
+                                        <i class="fas fa-times text-danger"></i>
+                                    {% endif %}
+                                </td>
+                                <td><img src="{{ item.first_image.image.url }}" alt="{{ item.first_image.alt_image }}" height="50px" width="50px"/></td>
+                                <td><div><a href="" class="text-primary"><i class="fas fa-edit text-primary>" aria-hidden="true"></i> Update</a></div></td>
+                                <td><div><a href="" class="text-danger"><i class="fas fa-trash text-danger>" aria-hidden="true"></i> Delete</a></div></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

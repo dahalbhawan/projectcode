@@ -1,0 +1,31 @@
+{% extends 'shopping/layout.html' %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block body %}
+    <div class="banner container-sm">
+        <img class="img-responsive" src="{{ banner.url }}" width="100%" alt="Banner">
+    </div>
+    <div class="card container-sm bg-info rounded-0">
+        <div class="card-title text-light px-3 py-2"><h3>Customer's Favourite</h3></div>
+        <div class="row">
+            {% for item in most_common_items %}
+                <div class="col-sm-3 p-2 ml-4">
+                    <div class="product-card card border-primary">
+                        <div class="card-title bg-danger rounded"><h5 class="text-light py-2 px-3">{{ item.name }}</h5></div>
+                        <div style="height:200px; width:200px;overflow:hidden; align-self: center;">
+                            <img class="card-img img-responsive" src="{{ item.item_images.first.image.url }}" alt="{{ item.item_images.first.alt_image }}">
+                        </div>
+                        <div class="card-body text-secondary">{{ item.description }}</div>
+                        <div class="buy d-flex justify-content-between align-items-center px-3 py-2">
+                            <div class="price text-success"><h5 class="mt-2">${{ item.price }}</h5></div>
+                            <a href="#" class="btn btn-danger mt-1"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
