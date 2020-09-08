@@ -30,7 +30,6 @@ class OrderAdmin(admin.ModelAdmin):
         'date_created',
         'status',
     )
-    filter_horizontal = ('items',)
 
 admin.site.register(User, UsersAdmin)
 admin.site.register(Item, ItemAdmin)
@@ -38,4 +37,5 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Category)
 admin.site.register(ItemImage)
 admin.site.register(Banner)
+admin.site.register(ItemOrder)
 # admin.site.register(Group, GroupAdmin) #no need as Group is by default registered

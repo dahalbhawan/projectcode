@@ -1,0 +1,23 @@
+{% extends 'shopping/layout.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Add Product
+{% endblock %}
+
+{% block body %}
+    <div class="container-sm p-2 mx-5">
+        <form action="{% url 'shopping:addproduct' %}" method="post" enctype='multipart/form-data' class="form-group">
+            {% csrf_token %}
+            {% if message %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endif %}
+            <div class="container-fluid-sm">
+                <h2 class= "text-info mt-3" >Create Product</h2>
+            </div>
+            {{ form|crispy }}
+            {{ formset.management_form }}
+            {{ image_form|crispy }}
+            <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+    </div>
+{% endblock %}

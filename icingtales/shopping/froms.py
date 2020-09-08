@@ -1,6 +1,7 @@
-from .models import User
+from .models import *
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.forms.models import modelformset_factory
 
 class SignInForm(AuthenticationForm):
     class Meta:
@@ -31,6 +32,33 @@ class RegistrationForm(UserCreationForm):
         self.fields['first_name'].widget.attrs['autofocus'] = True
         self.fields['first_name'].required = True
 
+class ItemCreationForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['name', 'description', 'categories', 'price', 'status']
 
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = ItemImage
+        fields = ['image','caption','alt_image']
+
+class OrderCreationForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['customer', 'status',]
+class ItemOrderForm(forms.ModelForm):
+    class Meta:
+        model = ItemOrder
+        fields = ['item','quantity']
+ItemFormset = modelformset_factory(
+    ItemOrder,
+    form=ItemOrderForm,
+    can_delete=False,
+)
+ImageFormset = modelformset_factory(
+    ItemImage,
+    form=ImageForm,
+    can_delete=False,
+)
 
 

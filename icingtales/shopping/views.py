@@ -4,10 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, Permission
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required, user_passes_test
+from datetime import date
 from .models import *
 from .analytics.analytics import get_top3_purchases
-from shopping.froms import SignInForm, RegistrationForm
-from datetime import date
+from shopping.froms import *
 
 
 # Create your views here.
@@ -133,12 +133,49 @@ def products_view(request):
     return render(request, 'shopping/products.html', {
         'items': Item.objects.all(),
     })
+@staff_member_required(login_url='/sign-in')
+@login_required(login_url='/sign-in')
+def add_product_view(request):
+    form = ItemCreationForm()
+    image_form = ImageFormset(queryset=ItemImage.objects.none())
+    if request.method == 'POST':
+        form = ItemCreationForm(request.POST)
+        image_form = ImageFormset(request.POST, request.FILES)
+        if form.is_valid() and image_form.is_valid():
+            item = form.save()
+            for form in image_form:
+                image = form.save(commit=False)
+                image.item = item
+                image.save()
+            return HttpResponseRedirect(reverse('shopping:products'))
+    return render(request, 'shopping/addproduct.html', {
+        'form': form,
+        'image_form': image_form
+    })
+
+def add_order_view(request):
+    order_form = OrderCreationForm()
+    item_form = ItemFormset(queryset=ItemOrder.objects.none())
+    if request.method == 'POST':
+        order_form = OrderCreationForm(request.POST)
+        item_form = ItemFormset(request.POST)
+        if order_form.is_valid() and item_form.is_valid():
+            order = order_form.save()
+            for form in item_form:
+                item = form.save(commit=False)
+                item.order = order
+                item.save()
+            return HttpResponseRedirect(reverse('shopping:admin'))
+
+    return render(request, 'shopping/addorder.html', {
+        'order_form': order_form,
+        'item_form': item_form,
+    })
 
 @staff_member_required(login_url='/sign-in')
 @login_required(login_url='/sign-in')
 def users_view(request):
     return render(request, 'shopping/users.html', {
-
     })
 
 def aboutus_view(request):

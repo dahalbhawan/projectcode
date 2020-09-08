@@ -31,10 +31,14 @@ class Item(models.Model):
 class ItemImage(models.Model):
     image = models.ImageField(blank=True, upload_to='shopping/uploads')
     caption = models.CharField(blank=True, max_length=100)
-    alt_image = models.SlugField(blank=False, max_length=10)
+    alt_image = models.SlugField(blank=True, max_length=10)
     item = models.ForeignKey(Item, blank=True, null=True, default=None, unique=True, on_delete=models.SET_NULL, related_name='item_images')
     def __str__(self):
-        return self.item.name
+        if self.item is not None:
+            return self.item.name
+        else:
+            return f"{self.id}"
+
 
 class Banner(models.Model):
     image = models.ImageField(blank=False, upload_to='shopping/banner')
@@ -47,11 +51,29 @@ class Order(models.Model):
         ('C', 'Cancelled'),
     )
     customer = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, related_name='orders')
-    items = models.ManyToManyField(Item, blank=False, related_name='order_items')
     date_created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, blank=False, default='P')
-    def __str(self):
-        return f"{self.id}: {self.customer}, {self.date_created}, {self.items}, {self.status}"
+    @property
+    def price(self):
+        price = 0
+        for item in self.order_items.all():
+            price += item.item.price*item.quantity
+        return price
+    def __str__(self):
+        if self.customer is not None:
+            return f"{self.id}: By {self.customer.get_full_name()}"
+        else:
+            return f"{self.id}"
+
+class ItemOrder(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='item_orders')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    quantity = models.IntegerField(blank=False)
+    def __str__(self):
+        if self.order.customer:
+            return f"{self.id}: {self.order.customer.get_full_name()}"
+        else:
+            return f"{self.id}"
 
 class SiteMap(models.Model):
     pass

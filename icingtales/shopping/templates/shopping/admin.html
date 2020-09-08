@@ -39,9 +39,12 @@
     <div class="container-fluid row">
         <div class="col-md-12 p-3">
             <div class="card border-primary p-3">
-                <h4 class="text-primary">Orders</h4>
-                <h5 class="text-secondary">Filter</h5>
-                <form class="form-inline" style="padding:5px">
+                <div class="inline-group">
+                    <h4 class="text-primary" style="display:inline;">Orders </h4>
+                    <a href= "{% url 'shopping:addorder' %}"><i class="fa fa-plus text-success"></i></a>
+                </div>
+                <h6 class="text-secondary">Filter</h6>
+                <form class="form-inline" style="padding-bottom: 5px;">
                     <div class="row">
                         <div class="col-md-2">
                             <input id="id" class= "form-control" type="text" name="id" placeholder="Id">
@@ -68,9 +71,11 @@
                         <thead>
                             <th scope="col">Id</th>
                             <th scope="col">Customer</th>
+                            <th scope="col">Contact</th>
                             <th scope="col">Order Date</th>
                             <th scope="col">Order Time</th>
                             <th scope="col">Items</th>
+                            <th scope="col">Price</th>
                             <th scope="col">Status</th>
                             <th scope="col">Update</th>
                             <th scope="col">Delete</th>
@@ -80,15 +85,17 @@
                             <tr scope="row">
                                 <td>{{ order.id }}</td>
                                 <td>{{ order.customer.get_full_name }}</td>
+                                <td>{{ order.customer.mobile_number }}</td>
                                 <td>{{ order.date_created.date }}</td>
                                 <td>{{ order.date_created.time }}</td>
                                 <td>
                                     <ol style="padding-left:12px;margin:0px;">
-                                        {% for item in order.items.all %}
-                                            <li>{{ item.name}}</li>
+                                        {% for item in order.order_items.all %}
+                                            <li>{{ item.item.name}} ({{ item.quantity }})</li>
                                         {% endfor %}
                                     </ol>
                                 </td>
+                                <td>${{ order.price }}</td>
                                 <td>{{ order_status|get_item:order.status }}</td>
                                 <td><div><a href="" class="text-primary"><i class="fas fa-edit text-primary>" aria-hidden="true"></i> Update</a></div></td>
                                 <td><div><a href="" class="text-danger"><i class="fas fa-trash text-danger>" aria-hidden="true"></i> Delete</a></div></td>
