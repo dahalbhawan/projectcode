@@ -1,0 +1,55 @@
+{% extends 'shopping/layout.html' %}
+
+{% block body %}
+    <div class="container-fluid m-3">
+        <h3 class="mb-2">Search results for "{{ keyword }}"</h3>
+        <hr>
+        <h5>Cake Items</h5>
+        <hr>
+        <ul>
+            {% for item in items %}
+                <li><a href="{% url 'shopping:item' item.id %}">{{ item.name }}</a></li>
+                {% empty %}
+                    No results
+            {% endfor %}
+        </ul>
+
+        <h5>Occassions</h5>
+        <hr>
+        <ul>
+            {% for category in categories %}
+                <li><a href="{% url 'shopping:category' category.id %}">{{ category.category }}</a></li>
+                {% empty %}
+                    No results
+            {% endfor %}
+        </ul>
+    <h5>Flavors</h5>
+        <hr>
+        <ul>
+            {% for flavor in flavors %}
+                <li><a href="{% url 'shopping:flavor' flavor.name %}">{{ flavor.name }}</a></li>
+                {% empty %}
+                    No results
+            {% endfor %}
+        </ul>
+
+    <h5>Toppinigs</h5>
+        <hr>
+        <ul>
+            {% for topping in toppings %}
+                <li><a href="{% url 'shopping:topping' topping.name %}">{{ topping.name }}</a></li>
+                {% empty %}
+                    No results
+            {% endfor %}
+        </ul>
+    <h5>Flowers</h5>
+        <hr>
+        <ul>
+            {% for flower in flowers %}
+                <li><a href="{% url 'shopping:flower' flower.name %}">{{ flower.name }}</a></li>
+                {% empty %}
+                    No results
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'shopping/layout.html' %}
+{% load static %}
+{% block title %}
+    {{ category.capitalize }} Cakes
+{% endblock %}
+{% block body-class %}{% endblock %}
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            $('.cart').click(function () {
+                let item_id = $(this).attr('data-id');
+                let url = "{% url 'shopping:item' '1' %}".replace('1', item_id);
+                console.log(url);
+                $('.sure').attr('href', url);
+            });
+        });
+    </script>
+{% endblock %}
+{% block body %}
+    <div class="item-collection container-fluid">
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Want to customize your cake e.g., Add Topping or Change Flavor?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-footer">
+                <a class="btn btn-danger no-thanks" href="" data-dismiss="modal">No thanks</a>
+                <a class="btn btn-success sure" href=""> Sure </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="w-100 item-collection-heading px-4">Our
+                {% if category %}
+                    {{ category.capitalize }} Cakes
+                {% elif flavor %}
+                    {{ flavor.capitalize }} Flavored Cakes
+                {% elif topping %}
+                     Cakes with {{ topping }} Topping
+                {% elif flower %}
+                    Cakes with {{ flower }} Flower
+                {% endif %}
+            </div>
+            {% for item in items %}
+                <div class="col">
+                    <div class="product-card card border-info m-3">
+                        <div class="card-title bg-info rounded d-flex justify-content-between p-1">
+                            <h6 class="text-light mt-1 ml-2">{{ item.name }}</h6>
+                            {% if item in top4_purchases %}
+                                <img src="{% static 'shopping/images/best-seller.png' %}" class="tag mx-2"/>
+                            {% endif %}
+                            {% if item in new_items %}
+                                <img src="{% static 'shopping/images/new.png' %}" class="tag mx-2"/>
+                            {% endif %}
+                        </div>
+                        <div style="height:400px; width:400px;overflow:hidden; align-self: center;">
+                            <img class="card-img img-responsive" src="{{ item.item_images.first.image.url }}" alt="{{ item.item_images.first.alt_image }}">
+                        </div>
+                        <div class="card-body text-secondary">{{ item.description }}</div>
+                        <div class="buy d-flex justify-content-between align-items-center px-3 py-2">
+                            <div class="price text-success"><h6 class="mt-2">${{ item.price }}</h6></div>
+                            <a {% if not request.user.is_authenticated %} href="{% url 'shopping:signin' %}" {% else %} href="" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ item.id }}"{% endif %} class="btn btn-info my-2 cart"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                            <a href="{% url 'shopping:item' item.id %}" class="btn btn-info my-2"><i class="fas fa-search"></i> View Item</a>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}
+                    <div class="w-100"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

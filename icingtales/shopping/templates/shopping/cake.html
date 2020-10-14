@@ -1,0 +1,288 @@
+{% extends 'shopping/layout.html' %}
+{% load static %}
+{% block title %}
+    {{ item.name }}
+{% endblock %}
+{% block javascript %}
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        //Ajax call
+        function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $(document).ready(function(){
+            $(".topping-button").click(function(e){
+                e.preventDefault();
+                $(".topping-button").css('font-weight','normal');
+                $(".topping-button").attr('data-selected','no');
+                let text = $(this).text();
+                $(this).css('font-weight','bold');
+                $(this).attr('data-selected','yes');
+                data = {
+                        'action':'topping',
+                        'topping':$(this).text(),
+                        'flavor':$(".flavor-button[data-selected='yes']").text(),
+                        'size': $(".size").val(),
+                        'quantity': $("#quantity").val()
+
+                    };
+                console.log(data);
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'shopping:item' item.id %}",
+                    data: data,
+                    success: function(response){
+                        $("#price").html("$"+response.price.toFixed(2));
+                        $(".info #topping").html(text+' topping ($'+response.topping_surcharge+')');
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert("Something Went Wrong!!");
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $(".flavor-button").click(function(f){
+                f.preventDefault();
+                $(".flavor-button").css('font-weight','normal');
+                $(".flavor-button").attr('data-selected','no');
+                let text = $(this).text()
+                $(this).css('font-weight','bold');
+                $(this).attr('data-selected','yes');
+                data= {
+                        'action':'flavor',
+                        'topping':$(".topping-button[data-selected='yes']").text(),
+                        'flavor':$(this).text(),
+                        'size': $(".size").val(),
+                        'quantity': $("#quantity").val()
+
+                    };
+                console.log(data);
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'shopping:item' item.id %}",
+                    data: data,
+                    success: function(response){
+                        $("#price").html("$"+response.price.toFixed(2));
+                        $(".info #flavor").html(text+' flavor ($'+response.flavor_surcharge+')')
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert("Something Went Wrong!!");
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $(".size").change(function(f){
+                f.preventDefault();
+                $(".size").attr('data-selected','no');
+                $(this).attr('data-selected','yes');
+                let size = $(this).val()
+                data= {
+                        'action':'size',
+                        'topping':$(".topping-button[data-selected='yes']").text(),
+                        'flavor':$(".flavor-button[data-selected='yes']").text(),
+                        'size': $(this).val(),
+                        'quantity': $("#quantity").val()
+
+                    };
+                console.log(data);
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'shopping:item' item.id %}",
+                    data: data,
+                    success: function(response){
+                        $("#price").html("$"+response.price.toFixed(2));
+                        $(".info #size").html(size+' ($'+response.size_surcharge+')')
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert("Something Went Wrong!!");
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $("#quantity").on('change', function(f){
+                f.preventDefault();
+                let quantity = $(this).val();
+                data= {
+                        'action':'quantity',
+                        'topping':$(".topping-button[data-selected='yes']").text(),
+                        'flavor':$(".flavor-button[data-selected='yes']").text(),
+                        'size': $(".size").val(),
+                        'quantity': $("#quantity").val()
+                    };
+                console.log(data);
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'shopping:item' item.id %}",
+                    data: data,
+                    success: function(response){
+                        $("#price").html("$"+response.price.toFixed(2));
+                        $(".info #display-quantity").html('x '+ quantity)
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert("Something Went Wrong!!");
+                    }
+                });
+            });
+        });
+        $(document).ready(function(){
+            $(".add-to-cart").submit(function(f){
+                f.preventDefault();
+                {% if request.user.is_authenticated %}
+                data= {
+                        'topping':$(".topping-button[data-selected='yes']").text(),
+                        'flavor':$(".flavor-button[data-selected='yes']").text(),
+                        'size': $(".size").val(),
+                        'quantity': $('#quantity').val(),
+                        'csrfmiddlewaretoken':csrftoken
+                    };
+                console.log(data)
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'shopping:add_to_cart' item.id %}",
+                    data: data,
+                    success: function(response){
+                        console.log(response);
+                        window.location.href = "{% url 'shopping:cart' user.id %}";
+
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert("Something Went Wrong!!");
+                    }
+                });
+                {% else %}
+                    window.location.href = "{% url 'shopping:signin' %}"
+                {% endif %}
+            });
+        });
+        $(document).ready(function(){
+            $(".reset-button").click(function(f){
+                f.preventDefault();
+                $(".flavor-button").css('font-weight','normal');
+                $(".flavor-button").attr('data-selected','no');
+                $(".topping-button").css('font-weight','normal');
+                $(".topping-button").attr('data-selected','no');
+                $(".size").attr('data-selected','no');
+                $("#quantity").val(1);
+                data= {
+                        'action':'reset',
+                    };
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'shopping:item' item.id %}",
+                    data: data,
+                    success: function(response){
+                        $("#price").html("$"+response.price);
+                        $(".info #topping").html('No topping');
+                        $(".info #flavor").html('No flavor');
+                        $(".info #size").html("Small Size")
+                    },
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert("Something Went Wrong!!");
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% block body-class %}{% endblock %}
+{% block body %}
+    <div class="row no-gutters bg-light position-relative">
+  <div class="col-md-6 mb-md-0 p-md-4">
+    <div style="max-width:600px;overflow:hidden; align-self: center;">
+        <img class="card-img img-responsive" src="{{ item.item_images.first.image.url }}" alt="{{ item.item_images.first.alt_image }}">
+    </div>
+  </div>
+  <div class="product-description col-md-6 position-static p-4 pl-md-0">
+    <div class="card-title bg-danger rounded"><h5 class="text-light py-2 px-3">{{ item.name }}</h5></div>
+    <p>{{ item.description }}</p>
+    {% if item in top4_purchases %}
+        <img src="{% static 'shopping/images/best-seller.png' %}" class="tag-big my-2" title="Best Seller"/>
+    {% endif %}
+  {% if item in new_items %}
+        <img src="{% static 'shopping/images/new.png' %}" class="tag-big my-2" title="New Item"/>
+    {% endif %}
+    <h6>Categories:</h6>
+    <div class="text-secondary mb-2">
+      {% for category in item.categories.all %}
+          <a href="{% url 'shopping:category' category %}">{{ category }}  </a>
+      {% endfor %}
+    </div>
+      <h6>Add Topping:</h6>
+    <div class="text-secondary mb-2">
+      {% for topping in item.available_toppings.all %}
+          <button class="topping-button btn btn-primary" data-selected="no">{{ topping }}</button>
+      {% endfor %}
+    </div>
+    <h6>Change Flavor:</h6>
+    <div class="text-secondary mb-2">
+      {% for flavor in item.available_flavors.all %}
+          <button class="flavor-button btn btn-primary" data-selected="no">{{ flavor }}</button>
+      {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h6>Size:</h6>
+            <select class="browser-default custom-select size">
+              <option value="Small" data-selected="yes" selected>Small</option>
+              <option value="Medium" data-selected="no">Medium</option>
+              <option value="Large" data-selected="no">Large</option>
+            </select>
+        </div>
+        <div class="col-sm-6">
+            <h6>Quantity:</h6>
+            <div class="text-secondary mb-2">
+                <input type="number" id="quantity" name="quantity" min="1" max="10" value="1">
+            </div>
+        </div>
+    </div><br>
+    <div class="info alert-info p-2 mb-2">
+        <h5 class="text-info">Speciality</h5>
+        <div id="topping">No Topping ($0.00)</div>
+        <div id="flavor">No Flavor ($0.00)</div>
+        <div id="size">Small ($0.00)</div>
+        <div id="display-quantity">x 1</div>
+        <button class="reset-button btn btn-secondary">Reset</button>
+    </div>
+    <div class="buy d-list justify-content-between align-items-center py-2">
+        <div class="text-success"><h5 id="price" class="mt-2">${{ item.price }}</h5></div>
+        <form action="{% url 'shopping:add_to_cart' item.id %}" class="add-to-cart" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mt-1"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

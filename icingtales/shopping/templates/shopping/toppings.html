@@ -1,0 +1,41 @@
+{% extends 'shopping/layout.html' %}
+
+{% block title %}
+    Toppings
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid row">
+        <div class="col-md-12 p-3">
+            <div class="card border-primary p-3">
+                <div class="inline-group">
+                    <h4 class="text-primary" style="display:inline;">Toppings </h4>
+                    <a href= "{% url 'shopping:addtopping' %}"><i class="fa fa-plus text-success"></i></a>
+                </div>
+                <div class="scrollable">
+                    <table class="dashboard-table table table-striped table-hover">
+                        <thead>
+                            <th scope="col">Id</th>
+                            <th scope="col">Topping Name</th>
+                            <th scope="col">Surcharge</th>
+                            <th scope="col">Update</th>
+                            <th scope="col">Delete</th>
+                        </thead>
+                        <tbody>
+                        {% for topping in toppings %}
+                            <tr scope="row">
+                                <td>{{ topping.id }}</td>
+                                <td>{{ topping.name }}</td>
+                                <td>${{ topping.surcharge }}</td>
+                                <td><div><a href="{% url 'shopping:updatetopping' topping.id %}" class="text-primary"><i class="fas fa-edit text-primary>" aria-hidden="true"></i> Update</a></div></td>
+                                <td><div><a href="" class="text-danger"><i class="fas fa-trash text-danger>" aria-hidden="true"></i> Delete</a></div></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

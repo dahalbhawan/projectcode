@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'phonenumber_field',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +75,11 @@ TEMPLATES = [
 ]
 
 TEMPLATES[0]['OPTIONS']['context_processors'].append('shopping.context_processors.context_processors.categories_processor')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('shopping.context_processors.context_processors.toppings_processor')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('shopping.context_processors.context_processors.flavors_processor')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('shopping.context_processors.context_processors.flowers_processor')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('shopping.context_processors.context_processors.best_sellers_processor')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('shopping.context_processors.context_processors.new_items_processor')
 
 WSGI_APPLICATION = 'icingtales.wsgi.application'
 
@@ -84,7 +90,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'icingtales',
-        'USER': 'dbadmin',
+        'USER': 'root',
         'PASSWORD': 'artofwar',
         'HOST': 'localhost',
         'PORT': '3306',
@@ -143,4 +149,14 @@ AUTHENTICATION_BACKENDS = (
     "shopping.EmailAuthenticationBackend.EmailBackend",
 )
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'dahalbhawan@gmail.com'
+EMAIL_HOST_PASSWORD = '9808148986maniDahal'
+
+PAYPAL_RECEIVER_EMAIL = 'dahalbhawan@gmail.com'
+PAYPAL_TEST = True
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+DATE_INPUT_FORMATS = ['%Y-%m-%d']

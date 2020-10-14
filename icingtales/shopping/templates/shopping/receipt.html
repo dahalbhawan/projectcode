@@ -1,0 +1,83 @@
+{% extends 'shopping/layout.html' %}
+{% load static %}
+{% block title %}
+    Invoice
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'shopping/css/receipt.css' %}">
+{% endblock %}
+{% block body %}
+    <table class="body-wrap">
+    <tbody><tr>
+        <td></td>
+        <td class="container" width="600">
+            <div class="content">
+                <table class="main" width="100%" cellpadding="0" cellspacing="0">
+                    <tbody><tr>
+                        <td class="content-wrap aligncenter">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tbody><tr>
+                                    <td class="content-block">
+                                        <h2>Invoice # {{ order.id }}</h2>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block">
+                                        <table class="invoice">
+                                            <tbody>
+                                            <tr>
+                                                <td>{{ order.customer.get_full_name }}<br>Invoice # {{ order.id }}<br>{{ order.date_created }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                        <thead>
+                                                            <th scope="col">Items</th>
+                                                            <th scope="col">Speciality</th>
+                                                            <th scope="col">Quantity</th>
+                                                            <th scope="col" class="float-right">Cost</th>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        {% for item in order.order_items.all %}
+                                                            <tr>
+                                                                <td>{{ item.item.name }}</td>
+                                                                <td>Topping: {{ item.topping.name }}, Flavor: {{ item.flavor.name }}, Size: {{ item.size }}</td>
+                                                                <td>{{ item.quantity }}</td>
+                                                                <td class="alignright">${{ item.price }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        <tr class="total">
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td>Total</td>
+                                                            <td>${{ order.price }}</td>
+                                                        </tr>
+                                                    </tbody></table>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block">
+                                        Icing Tales Cake, Western Sydney, NSW, Australia
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                </tbody></table>
+                <div class="footer">
+                    <table width="100%">
+                        <tbody><tr>
+                            <a href="{% url 'shopping:pdf_receipt' order.id %}" class="btn btn-success float-right">Export to PDF</a>
+                        </tr>
+                    </tbody></table>
+                </div></div>
+        </td>
+        <td></td>
+    </tr>
+</tbody></table>
+
+{% endblock %}

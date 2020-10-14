@@ -1,0 +1,9 @@
+{% extends 'shopping/layout.html' %}
+
+{% block body %}
+    <div class="container-fluid m-3">
+        <div class="alert-success p-2">Payment done.</div>
+        <a href="{% url 'shopping:receipt' order.id %}">View Invoice</a>
+    </div>
+
+{% endblock %}

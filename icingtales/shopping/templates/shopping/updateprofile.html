@@ -1,0 +1,19 @@
+{% extends 'shopping/layout.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Update Profile
+{% endblock %}
+{% block body %}
+<div class="container-sm p-2 mx-5">
+    <h3 class="mt-3 font-weight-normal">Update Info</h3>
+    <p class="form-description text-muted">Please change the details below as necessary.<br>Fields marked (*) are compulsory.</p>
+    <form action="{% url 'shopping:updateprofile' user.id %}" method="post" enctype='multipart/form-data' class="form-group">
+        {% csrf_token %}
+        {{ user_update_form|crispy }}
+        {{ formset.management_form }}
+        {{ profile_update_form|crispy }}
+
+        <button class="btn btn-primary" type="submit">Update</button>
+    </form>
+    </div>
+{% endblock %}

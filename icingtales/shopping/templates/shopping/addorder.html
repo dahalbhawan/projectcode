@@ -17,6 +17,7 @@
             <div class="container-fluid-sm">
                 <h2 class= "text-info mt-3" >Create Order</h2>
             </div>
+            {{ formset.management_form }}
             {{ item_form|crispy }}
             {{ order_form|crispy }}
             <button class="btn btn-primary" type="submit">Create</button>

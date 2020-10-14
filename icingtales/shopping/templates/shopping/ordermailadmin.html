@@ -1,0 +1,45 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'shopping/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'shopping/css/order.css' %}">
+
+</head>
+<body>
+    <div class="container bootdey my-4">
+    <div class="panel panel-default panel-order">
+        <div class="panel-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-12">
+                      <span><strong>New order has been placed. Here are the details.</strong></span><br>
+                      <span><strong>By: {{ order.customer.get_full_name }}</strong></span><br>
+                    <span><strong>Order # {{ order.id }}</strong></span><br>
+                    Items :<br> {% for item in order.order_items.all %}
+                      {{ item.quantity }} {{ item.item.name }} (Topping: {{ item.topping }}, Flavor: {{ item.flavor }}, Size: {{ item.size }})<br>
+                    {% endfor %}
+                      Cost: ${{ order.price }}<br><br>
+                      <div class="pull-right"><label class="label label-info">Status: {{ order_status|get_item:order.status }}</label> </div>
+                  </div>
+                  <div class="col-md-12">
+                    order made on: {{ order.date_created }}
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+
+

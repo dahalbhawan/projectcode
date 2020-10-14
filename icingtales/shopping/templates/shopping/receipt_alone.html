@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-size: 10pt;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+        }
+        #customers {
+              border-collapse: collapse;
+              width: 100%;
+        }
+
+        #customers td, #customers th {
+          border-bottom: 1px solid #ddd;
+          padding: 8px;
+        }
+
+        #customers th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          color: black;
+        }
+        .total {
+            border-top: 2px solid black;
+            border-bottom: 2px solid black;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Invoice # {{ order.id }}</h1>
+    <div class="container-fluid">
+        <div>{{ order.customer.get_full_name }}</div>
+        <div>Invoice # {{ order.id }}</div>
+        <div>Order date: {{ order.date_created }}</div>
+    </div><br>
+    <table id="customers">
+        <tr>
+            <th scope="col">Items</th>
+            <th scope="col">Speciality</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Cost</th>
+        </tr>
+        <tbody>
+
+            {% for item in order.order_items.all %}
+                <tr>
+                    <td>{{ item.item.name }}</td>
+                    <td>Topping: {{ item.topping.name }}, Flavor: {{ item.flavor.name }}, Size: {{ item.size }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.price }}</td>
+                </tr>
+            {% endfor %}
+            <tr class="total">
+                <td colspan="3" style="text-align: right;"><strong>Total</strong></td>
+                <td><strong>${{ order.price }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+        <i style="font-size: 8pt;">Icing Tales Cake, Western Sydney, NSW, Australia</i>
+    </div>
+
+
+</body>
+</html>

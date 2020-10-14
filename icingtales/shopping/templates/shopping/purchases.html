@@ -1,0 +1,51 @@
+{% extends 'shopping/layout.html' %}
+{% load static %}
+{% block title %}
+    Purchase History
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'shopping/css/order.css' %}">
+{% endblock %}
+{% block body %}
+    <div class="container bootdey my-4">
+    <div class="panel panel-default panel-order">
+      <div class="panel-heading">
+          <h3>Order history</h3>
+      </div>
+        {% for order in orders %}
+        <div class="panel-body">
+            <div class="row">
+              <div class="col-md-1">
+                  <img src="{% if profile.profile_image %}
+                                {{ profile.profile_image.url }}
+                                {% elif profile.user.gender == 'Male' %}
+                                    {% static 'shopping/images/male-profile.png' %}
+                                {% elif profile.user.gender == 'Female' %}
+                                    {% static 'shopping/images/female-profile.png' %}
+                                {% endif %}"
+                       class="media-object img-thumbnail">
+              </div>
+              <div class="col-md-11">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="pull-right"><label class="label label-info">{{ order_status|get_item:order.status }}</label> </div>
+                    <span><strong>Order # {{ order.id }}</strong></span><br>
+                    Items :<br> {% for item in order.order_items.all %}
+                      {{ item.quantity }} {{ item.item.name }} (Topping: {{ item.topping }}, Flavor: {{ item.flavor }}, Size: {{ item.size }})<br>
+                    {% endfor %}
+                      Cost: ${{ order.price }}<br><br>
+                      <a data-placement="top" class="btn btn-success" href="{% url 'shopping:receipt' order.id %}" title="View">View Invoice</a>
+
+                  </div>
+                  <div class="col-md-12">
+                    order made on: {{ order.date_created }}
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+
+{% endblock %}

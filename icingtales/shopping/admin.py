@@ -7,6 +7,7 @@ class UsersAdmin(admin.ModelAdmin):
         'id',
         'first_name',
         'last_name',
+        'gender',
         'email',
         'mobile_number',
         'date_of_birth',
@@ -32,9 +33,16 @@ class OrderAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(User, UsersAdmin)
+admin.site.register(Profile)
 admin.site.register(Item, ItemAdmin)
+admin.site.register(Flower)
+admin.site.register(CustomItem)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Cart)
+admin.site.register(CartItem)
 admin.site.register(Category)
+admin.site.register(Topping)
+admin.site.register(Flavor)
 admin.site.register(ItemImage)
 admin.site.register(Banner)
 admin.site.register(ItemOrder)
