@@ -156,10 +156,13 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'dahalbhawan@gmail.com'
-EMAIL_HOST_PASSWORD = '9808148986maniDahal'
+EMAIL_HOST_PASSWORD = '********'
 
 PAYPAL_RECEIVER_EMAIL = 'dahalbhawan@gmail.com'
 PAYPAL_TEST = True
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 DATE_INPUT_FORMATS = ['%Y-%m-%d']
+<<<<<<< HEAD
 TEST_WITHOUT_MIGRATIONS_COMMAND = 'django_nose.management.commands.test.Command'
+=======
+>>>>>>> d65c3aaa7153c1204e176a04dfc28995c3bb37fe
