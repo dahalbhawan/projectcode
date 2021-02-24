@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'phonenumber_field',
     'paypal.standard.ipn',
+    'test_without_migrations',
+    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +162,4 @@ PAYPAL_RECEIVER_EMAIL = 'dahalbhawan@gmail.com'
 PAYPAL_TEST = True
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 DATE_INPUT_FORMATS = ['%Y-%m-%d']
+TEST_WITHOUT_MIGRATIONS_COMMAND = 'django_nose.management.commands.test.Command'

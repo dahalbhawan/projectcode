@@ -12,6 +12,7 @@
                 let url = "{% url 'shopping:item' '1' %}".replace('1', item_id);
                 console.log(url);
                 $('.sure').attr('href', url);
+                $('.no-thanks').attr('href', "{% url 'shopping:add_to_cart' '1'%}".replace('1',item_id));
             });
         });
     </script>
@@ -38,12 +39,39 @@
       </div>
     </div>
     <div class="item-collection container-fluid px-4 py-3">
+    {% if request.user.is_authenticated and recommended|length > 0 %}
+        <div class="item-collection-heading">
+            Recommended For You !!
+        </div>
+        <div class="row mb-4">
+            {% for item in recommended %}
+                <div class="col-sm m-2">
+                    <div class="product-card card border-info">
+                        <div class="card-title bg-info rounded d-flex justify-content-between">
+                            <h6 class="text-white py-2 px-3">{{ item.name }}</h6>
+                            <img src="{% static 'shopping/images/new.png' %}" class="tag mt-1 mx-2"/>
+                        </div>
+                        <div style="height:200px; width:200px;overflow:hidden; align-self: center;">
+                            <img class="card-img img-responsive" src="{{ item.item_images.first.image.url }}" alt="{{ item.item_images.first.alt_image }}">
+                        </div>
+                        <div class="card-body text-secondary">{{ item.description }}</div>
+                        <div class="price text-success px-3"><h6 class="mt-2">${{ item.price }}</h6></div>
+                        <div class="d-flex px-3 justify-content-between">
+                            <a {% if not request.user.is_authenticated %} href="{% url 'shopping:signin' %}" {% else %} href="" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ item.id }}" {% endif %} class="btn btn-info my-2 cart"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                            <a href="{% url 'shopping:item' item.id %}" class="btn btn-info my-2"><i class="fas fa-search"></i> View Item</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
         <div class="item-collection-heading">
             Try Our New Cakes !!
         </div>
         <div class="row mb-4">
             {% for item in new_items %}
-                <div class="col">
+                <div class="col-sm m-2">
                     <div class="product-card card border-info">
                         <div class="card-title bg-info rounded d-flex justify-content-between">
                             <h6 class="text-white py-2 px-3">{{ item.name }}</h6>
@@ -66,7 +94,7 @@
         <div class="item-collection-heading">
             Pick Our Customers' Favourite !!
         </div>
-        <div class="row">
+        <div class="row mb-4">
             {% for item in top4_purchases %}
                 <div class="col-sm m-2">
                     <div class="product-card card border-info">

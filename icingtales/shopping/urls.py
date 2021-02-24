@@ -46,6 +46,7 @@ urlpatterns = [
     path('toppings/update/<int:id>', views.update_topping_view, name='updatetopping'),
     path('flavors/update/<int:id>', views.update_flavor_view, name='updateflavor'),
     path('flowers/update/<int:id>', views.update_flower_view, name='updateflower'),
+    path('admin-panel/order/delete/<int:id>', views.delete_order_view, name='deleteorder'),
 
 ]
 

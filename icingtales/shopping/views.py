@@ -32,7 +32,8 @@ def index_view(request):
         return render(request, 'shopping/index.html', {
             'first_name': request.user.get_short_name(),
             'banner': Banner.objects.first().image,
-            'items' : Item.objects.all()
+            'items' : Item.objects.all(),
+            'recommended': get_recommended_items(request.user.id)
         })
     return render(request, 'shopping/index.html', {
         'banner': Banner.objects.first().image,
@@ -87,10 +88,9 @@ def register_view(request):
                                             date_of_birth=date_of_birth,
                                             password=password1,
                                             )
-            Group.objects.get(name='Customer').user_set.add(user)
+            user.save()
             profile = Profile(user=user)
             profile.save()
-            user.save()
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
             return HttpResponseRedirect(reverse('shopping:index'))
         return render(request, 'shopping/register.html', {
@@ -335,12 +335,14 @@ def users_view(request):
     return render(request, 'shopping/users.html', {
     })
 
-@login_required
+@login_required(login_url='/sign-in')
 def profile_view(request, id):
     profile = Profile.objects.get(user=User.objects.get(pk=id))
     return render(request,'shopping/profile.html', {
         'profile': profile,
     })
+
+@login_required(login_url='/sign-in')
 def update_profile_view(request, id):
     user_instance = get_object_or_404(User, pk=id)
     profile_instance = get_object_or_404(Profile, user=user_instance)
@@ -357,6 +359,7 @@ def update_profile_view(request, id):
         'profile_update_form': profile_update_formset,
     })
 
+@login_required(login_url='/sign-in')
 def cart_view(request, id):
     user_cart = Cart.objects.filter(user=request.user).first()
     if user_cart:
@@ -368,6 +371,7 @@ def cart_view(request, id):
         'cart_items': cart_items,
     })
 
+@login_required(login_url='/sign-in')
 def add_to_cart_view(request, item_id):
     item_to_add = Item.objects.get(pk=item_id)
     user_cart, cart_created = Cart.objects.get_or_create(user=request.user)
@@ -398,17 +402,20 @@ def add_to_cart_view(request, item_id):
         return JsonResponse({'success':True}, status=200)
     return HttpResponseRedirect(reverse('shopping:cart', kwargs={'id': request.user.id}))
 
+@login_required(login_url='/sign-in')
 def delete_cart_item_view(request, id):
     cart_item = CartItem.objects.get(pk=id)
     cart_item.delete()
     return HttpResponseRedirect(reverse('shopping:cart', kwargs={'id':request.user.id}))
 
+@login_required(login_url='/sign-in')
 def empty_cart_view(request, id):
     user = request.user
     user_cart = Cart.objects.get(user=user)
     user_cart.delete()
     return HttpResponseRedirect(reverse('shopping:cart', kwargs={'id':request.user.id}))
 
+@login_required(login_url='/sign-in')
 def checkout_view(request, id):
     user = request.user
     user_cart = Cart.objects.get(user=user)
@@ -433,6 +440,7 @@ def checkout_view(request, id):
         # })
     return HttpResponseRedirect(reverse('shopping:cart', kwargs={'id':request.user.id}))
 
+@login_required(login_url='/sign-in')
 def purchases_view(request, id):
     order_status = dict(Order.STATUS_CHOICES)
     user = request.user
@@ -443,6 +451,7 @@ def purchases_view(request, id):
         'profile': Profile.objects.get(user=user)
     })
 
+@login_required(login_url='/sign-in')
 def process_payment(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     host = request.get_host()
@@ -465,6 +474,7 @@ def process_payment(request, order_id):
     return render(request, 'shopping/process_payment.html', {'order': order, 'form': form})
 
 @csrf_exempt
+@login_required(login_url='/sign-in')
 def payment_done(request, order_id):
     user = request.user
     user_cart = Cart.objects.get(user=user)
@@ -476,6 +486,7 @@ def payment_done(request, order_id):
     })
 
 @csrf_exempt
+@login_required(login_url='/sign-in')
 def payment_canceled(request, order_id):
     order = Order.objects.get(pk=order_id)
     order.delete()
@@ -484,16 +495,20 @@ def payment_canceled(request, order_id):
 @user_passes_test(lambda u: not (u.is_superuser or u.is_staff), login_url='/sign-in')
 def aboutus_view(request):
     return render(request, 'shopping/aboutus.html')
+
 @user_passes_test(lambda u: not (u.is_superuser or u.is_staff), login_url='/sign-in')
 def sitemap_view(request):
     return render(request, 'shopping/sitemap.html')
 
+
+@login_required(login_url='/sign-in')
 @user_passes_test(lambda u: not (u.is_superuser or u.is_staff), login_url='/sign-in')
 def receipt_view(request, order_id):
     return render(request, 'shopping/receipt.html', {
         'order': Order.objects.get(pk=order_id)
     })
 
+@login_required(login_url='/sign-in')
 @user_passes_test(lambda u: not (u.is_superuser or u.is_staff), login_url='/sign-in')
 def generate_PDF_view(request, order_id):
     data = {'order': Order.objects.get(pk=order_id)}
@@ -632,3 +647,10 @@ def update_flower_view(request, id):
         'flower': flower_instance,
         'form': form,
     })
+
+@staff_member_required(login_url='/sign-in')
+@login_required(login_url='/sign-in')
+def delete_order_view(request, id):
+    order = Order.objects.get(pk=id)
+    order.delete()
+    return HttpResponseRedirect(reverse('shopping:admin'))

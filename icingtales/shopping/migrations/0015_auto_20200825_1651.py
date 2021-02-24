@@ -23,6 +23,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='order',
             name='items',
-            field=models.ManyToManyField(related_name='order_items', through='shopping.ItemOrder', to='shopping.Item'),
+            field=models.ManyToManyField(related_name='order_items', to='shopping.Item'),
         ),
     ]

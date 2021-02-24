@@ -12,7 +12,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=10, blank=False, null=False, choices=GENDER_CHOICES, default='Male')
     mobile_number = PhoneNumberField(blank=False, unique=True, help_text='Example: +61451234567')
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'date_of_birth', 'mobile_number',]
+    REQUIRED_FIELDS = ['first_name', 'date_of_birth', 'gender', 'mobile_number',]
     def __str__(self):
         return self.first_name
 
